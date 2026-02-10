@@ -13,13 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build -t mywebsite:latest .
-
-      - name: Stop old container (if running)
+      - name: Stop docker images
         run: |
           docker stop mywebsite_container || true
           docker rm mywebsite_container || true
+
+      - name: Build Docker image
+        run: docker build -t mywebsite:latest .
 
       - name: Run new container
         run: |
