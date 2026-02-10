@@ -3,10 +3,273 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Docker Website</title>
+  <title>For Sree 💘</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", sans-serif;
+      background: linear-gradient(135deg, #ff4d6d, #ff8fab, #ffc2d1);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .card {
+      width: 90%;
+      max-width: 650px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      position: relative;
+      z-index: 5;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 2.3rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .hint {
+      font-style: italic;
+      opacity: 0.95;
+      margin-top: 15px;
+    }
+
+    .love-btn {
+      position: absolute;
+      padding: 14px 22px;
+      border: none;
+      border-radius: 999px;
+      background: white;
+      color: #ff2d55;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+      transition: transform 0.15s ease;
+      z-index: 10;
+      user-select: none;
+    }
+
+    .love-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+
+    .glow {
+      animation: glowPulse 1.2s infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      from { box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+      to   { box-shadow: 0 0 35px rgba(255,255,255,0.85); }
+    }
+
+    .final-message {
+      display: none;
+      margin-top: 25px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
+      font-size: 1.15rem;
+    }
+
+    .final-message b {
+      font-size: 1.25rem;
+    }
+
+    .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 22px;
+      animation: floatUp linear forwards;
+      opacity: 0.85;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0) scale(1); opacity: 0.85; }
+      to { transform: translateY(-120vh) scale(1.8); opacity: 0; }
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Hello from Docker 🚀 </h1>
-  <p>This is a basic HTML page running inside a container.</p>
+
+  <div class="hearts" id="hearts"></div>
+
+  <div class="card">
+    <h1>Happy Valentine’s Day, Sree 💘</h1>
+
+    <p>
+      Hey beautiful... 😘<br><br>
+      I wanted to give you something sweet, romantic,
+      and just a <b>tiny bit naughty</b>.<br><br>
+      Because honestly Sree... you drive me crazy in the best way.
+    </p>
+
+    <p class="hint">
+      Now try clicking the button... if you can catch it 😏<br>
+      But there’s a rule, love.<br>
+      It only listens to you when you say: <b>"I love you Guddu"</b>
+    </p>
+
+    <div class="status" id="status">
+      🎤 Click <b>Enable Mic</b> and say: <b>I love you Guddu</b>
+    </div>
+
+    <div class="final-message" id="finalMessage">
+      💋 <b>Good girl, Sree.</b><br><br>
+      I heard you.<br>
+      And now you’ve officially unlocked your Valentine surprise. 😈❤️<br><br>
+
+      Tonight, I’m not letting you escape.<br>
+      I want your hugs, your kisses...<br>
+      and I want you <b>close</b> — exactly where you belong. 🔥<br><br>
+
+      <b>Love, Guddu 💘</b>
+    </div>
+  </div>
+
+  <button class="love-btn" id="runawayBtn">Catch me 😘</button>
+
+  <button class="love-btn glow" id="micBtn"
+    style="top: 85%; left: 50%; transform: translateX(-50%);
+    background:#ff2d55; color:white;">
+    Enable Mic 🎤
+  </button>
+
+  <script>
+    const btn = document.getElementById("runawayBtn");
+    const micBtn = document.getElementById("micBtn");
+    const status = document.getElementById("status");
+    const finalMessage = document.getElementById("finalMessage");
+    const hearts = document.getElementById("hearts");
+
+    let unlocked = false;
+
+    function randomPosition() {
+      const padding = 120;
+      const x = Math.random() * (window.innerWidth - padding);
+      const y = Math.random() * (window.innerHeight - padding);
+      btn.style.left = x + "px";
+      btn.style.top = y + "px";
+      btn.style.transform = "translateX(0)";
+    }
+
+    randomPosition();
+
+    btn.addEventListener("mouseenter", () => {
+      if (!unlocked) {
+        randomPosition();
+        status.innerHTML = "😏 Too slow, Sree... try harder.";
+      }
+    });
+
+    btn.addEventListener("click", () => {
+      if (!unlocked) {
+        status.innerHTML = "😂 Not yet, babe. Say <b>\"I love you Guddu\"</b> first.";
+        randomPosition();
+      } else {
+        finalMessage.style.display = "block";
+        status.innerHTML = "💘 Come here, my love... you’re mine now 😈";
+        startHeartExplosion();
+        btn.style.display = "none";
+      }
+    });
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerText = ["❤️","💋","💕","😍","🔥","💘"][Math.floor(Math.random() * 6)];
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (2 + Math.random() * 3) + "s";
+      heart.style.fontSize = (18 + Math.random() * 30) + "px";
+      hearts.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 5000);
+    }
+
+    function startHeartExplosion() {
+      for (let i = 0; i < 45; i++) {
+        setTimeout(createHeart, i * 70);
+      }
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.lang = "en-US";
+
+      recognition.onresult = (event) => {
+        const last = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+        console.log("Heard:", last);
+
+        if (last.includes("i love you guddu")) {
+          unlocked = true;
+          status.innerHTML = "💖 Awww... Sree, I love you too.";
+          btn.innerText = "Click me, baby 💋";
+          btn.classList.add("glow");
+
+          btn.style.left = "50%";
+          btn.style.top = "70%";
+          btn.style.transform = "translateX(-50%)";
+
+          startHeartExplosion();
+          recognition.stop();
+          micBtn.style.display = "none";
+        } else {
+          status.innerHTML = `🎧 I heard: "<b>${last}</b>"<br>Now say: <b>I love you Guddu</b> 😘`;
+        }
+      };
+
+      recognition.onerror = () => {
+        status.innerHTML = "⚠️ Mic error. Refresh and allow microphone access, baby 😅";
+      };
+
+      micBtn.addEventListener("click", () => {
+        status.innerHTML = "🎤 Listening... say <b>I love you Guddu</b> 😘";
+        recognition.start();
+        micBtn.innerText = "Listening... 💞";
+      });
+
+    } else {
+      status.innerHTML = "⚠️ Voice recognition not supported. Use Chrome or Edge.";
+      micBtn.style.display = "none";
+    }
+
+    window.addEventListener("resize", () => {
+      if (!unlocked) randomPosition();
+    });
+  </script>
+
 </body>
 </html>
