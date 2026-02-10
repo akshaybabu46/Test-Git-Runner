@@ -1,0 +1,29 @@
+name: Deploy Docker Website (Self Hosted)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t mywebsite:latest .
+
+      - name: Stop old container (if running)
+        run: |
+          docker stop mywebsite_container || true
+          docker rm mywebsite_container || true
+
+      - name: Run new container
+        run: |
+          docker run -d \
+            -p 8080:80 \
+            --name mywebsite_container \
+            mywebsite:latest
