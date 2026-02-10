@@ -20,7 +20,7 @@
 
     .card {
       width: 90%;
-      max-width: 650px;
+      max-width: 720px;
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(12px);
@@ -34,7 +34,7 @@
 
     h1 {
       margin-top: 0;
-      font-size: 2.3rem;
+      font-size: 2.2rem;
     }
 
     p {
@@ -42,13 +42,67 @@
       line-height: 1.6;
     }
 
-    .hint {
-      font-style: italic;
-      opacity: 0.95;
-      margin-top: 15px;
+    .btn {
+      margin-top: 20px;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 999px;
+      background: white;
+      color: #ff2d55;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+      transition: 0.2s;
     }
 
-    .love-btn {
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status {
+      margin-top: 18px;
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+
+    .puzzle-area {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tile {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: grab;
+      border: 1px solid rgba(255,255,255,0.25);
+      user-select: none;
+    }
+
+    input {
+      margin-top: 15px;
+      padding: 12px;
+      width: 80%;
+      max-width: 360px;
+      border-radius: 14px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .runaway-btn {
       position: absolute;
       padding: 14px 22px;
       border: none;
@@ -63,14 +117,8 @@
       user-select: none;
     }
 
-    .love-btn:hover {
+    .runaway-btn:hover {
       transform: scale(1.08);
-    }
-
-    .status {
-      margin-top: 20px;
-      font-size: 1rem;
-      opacity: 0.95;
     }
 
     .glow {
@@ -83,17 +131,13 @@
     }
 
     .final-message {
-      display: none;
-      margin-top: 25px;
+      margin-top: 22px;
       padding: 18px;
       border-radius: 18px;
       background: rgba(255,255,255,0.18);
       border: 1px solid rgba(255,255,255,0.25);
       font-size: 1.15rem;
-    }
-
-    .final-message b {
-      font-size: 1.25rem;
+      display: none;
     }
 
     .hearts {
@@ -124,84 +168,41 @@
   <div class="hearts" id="hearts"></div>
 
   <div class="card">
-    <h1>Happy Valentine’s Day, Sree 💘</h1>
-
-    <p>
-      Hey beautiful... 😘<br><br>
-      I wanted to give you something sweet, romantic,
-      and just a <b>tiny bit naughty</b>.<br><br>
-      Because honestly Sree... you drive me crazy in the best way.
-    </p>
-
-    <p class="hint">
-      Now try clicking the button... if you can catch it 😏<br>
-      But there’s a rule, love.<br>
-      It only listens to you when you say: <b>"I love you Guddu"</b>
-    </p>
-
-    <div class="status" id="status">
-      🎤 Click <b>Enable Mic</b> and say: <b>I love you Guddu</b>
-    </div>
-
-    <div class="final-message" id="finalMessage">
-      💋 <b>Good girl, Sree.</b><br><br>
-      I heard you.<br>
-      And now you’ve officially unlocked your Valentine surprise. 😈❤️<br><br>
-
-      Tonight, I’m not letting you escape.<br>
-      I want your hugs, your kisses...<br>
-      and I want you <b>close</b> — exactly where you belong. 🔥<br><br>
-
+    <h1 id="title">Happy Valentine’s Day, Sree 💘</h1>
+    <p id="story">
+      Hi my love... 😘<br><br>
+      I made you a little game.<br>
+      If you finish it, you unlock something special from me.<br><br>
+      But fair warning... it gets more dangerous the further you go 😏
+      <br><br>
+      Ready?
+      <br><br>
       <b>Love, Guddu 💘</b>
-    </div>
+    </p>
+
+    <!-- STAGE BUTTON -->
+    <button class="btn" id="nextBtn">Start 💝</button>
+
+    <div id="stageArea"></div>
+
+    <div class="status" id="status"></div>
+
+    <div class="final-message" id="finalMessage"></div>
   </div>
 
-  <button class="love-btn" id="runawayBtn">Catch me 😘</button>
-
-  <button class="love-btn glow" id="micBtn"
-    style="top: 85%; left: 50%; transform: translateX(-50%);
-    background:#ff2d55; color:white;">
-    Enable Mic 🎤
-  </button>
+  <button class="runaway-btn hidden" id="runawayBtn">Catch me 😘</button>
 
   <script>
-    const btn = document.getElementById("runawayBtn");
-    const micBtn = document.getElementById("micBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const stageArea = document.getElementById("stageArea");
     const status = document.getElementById("status");
+    const title = document.getElementById("title");
+    const story = document.getElementById("story");
+    const runawayBtn = document.getElementById("runawayBtn");
     const finalMessage = document.getElementById("finalMessage");
     const hearts = document.getElementById("hearts");
 
-    let unlocked = false;
-
-    function randomPosition() {
-      const padding = 120;
-      const x = Math.random() * (window.innerWidth - padding);
-      const y = Math.random() * (window.innerHeight - padding);
-      btn.style.left = x + "px";
-      btn.style.top = y + "px";
-      btn.style.transform = "translateX(0)";
-    }
-
-    randomPosition();
-
-    btn.addEventListener("mouseenter", () => {
-      if (!unlocked) {
-        randomPosition();
-        status.innerHTML = "😏 Too slow, Sree... try harder.";
-      }
-    });
-
-    btn.addEventListener("click", () => {
-      if (!unlocked) {
-        status.innerHTML = "😂 Not yet, babe. Say <b>\"I love you Guddu\"</b> first.";
-        randomPosition();
-      } else {
-        finalMessage.style.display = "block";
-        status.innerHTML = "💘 Come here, my love... you’re mine now 😈";
-        startHeartExplosion();
-        btn.style.display = "none";
-      }
-    });
+    let stage = 0;
 
     function createHeart() {
       const heart = document.createElement("div");
@@ -215,59 +216,246 @@
       setTimeout(() => heart.remove(), 5000);
     }
 
-    function startHeartExplosion() {
-      for (let i = 0; i < 45; i++) {
-        setTimeout(createHeart, i * 70);
+    function heartBurst(amount = 30) {
+      for (let i = 0; i < amount; i++) {
+        setTimeout(createHeart, i * 60);
       }
     }
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let recognition;
+    // ========== STAGE 1: DRAG HEARTS ORDER ==========
+    function stage1() {
+      title.innerText = "Stage 1: Heart Puzzle 💞";
+      story.innerHTML = `
+        Sree... arrange the hearts in the correct order 😘<br><br>
+        <b>Hint:</b> The order is how Guddu feels when he sees you.
+      `;
 
-    if (SpeechRecognition) {
-      recognition = new SpeechRecognition();
+      status.innerHTML = "Drag the hearts left-to-right into the correct mood order.";
+
+      const correctOrder = "😍❤️🔥💋";
+      let current = ["🔥","❤️","💋","😍"];
+
+      stageArea.innerHTML = `
+        <div class="puzzle-area" id="puzzle"></div>
+        <button class="btn hidden" id="checkBtn">Check 💘</button>
+      `;
+
+      const puzzle = document.getElementById("puzzle");
+      const checkBtn = document.getElementById("checkBtn");
+
+      function renderTiles() {
+        puzzle.innerHTML = "";
+        current.forEach((emoji, index) => {
+          const tile = document.createElement("div");
+          tile.className = "tile";
+          tile.innerText = emoji;
+          tile.draggable = true;
+
+          tile.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("text/plain", index);
+          });
+
+          tile.addEventListener("dragover", (e) => e.preventDefault());
+
+          tile.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const fromIndex = e.dataTransfer.getData("text/plain");
+            const toIndex = index;
+
+            const temp = current[fromIndex];
+            current[fromIndex] = current[toIndex];
+            current[toIndex] = temp;
+
+            renderTiles();
+            checkBtn.classList.remove("hidden");
+          });
+
+          puzzle.appendChild(tile);
+        });
+      }
+
+      renderTiles();
+
+      checkBtn.addEventListener("click", () => {
+        if (current.join("") === correctOrder) {
+          status.innerHTML = "💖 Correct! Guddu is officially obsessed with you.";
+          heartBurst(25);
+          nextBtn.classList.remove("hidden");
+          nextBtn.innerText = "Next Stage 😏";
+          stage++;
+        } else {
+          status.innerHTML = "😈 Not quite... try again, beautiful.";
+          heartBurst(10);
+        }
+      });
+    }
+
+    // ========== STAGE 2: RIDDLE ==========
+    function stage2() {
+      title.innerText = "Stage 2: The Guddu Riddle 😌";
+      story.innerHTML = `
+        Okay Sree... answer this 😏<br><br>
+        <b>Riddle:</b><br>
+        "I don’t need oxygen...<br>
+        because when I’m with you, I forget to breathe."<br><br>
+        What am I?
+      `;
+
+      stageArea.innerHTML = `
+        <input id="answerInput" placeholder="Type your answer here..." />
+        <br>
+        <button class="btn" id="submitAnswer">Submit 💘</button>
+      `;
+
+      status.innerHTML = "Hint: It's something Guddu is around you 😏";
+
+      document.getElementById("submitAnswer").addEventListener("click", () => {
+        const answer = document.getElementById("answerInput").value.trim().toLowerCase();
+
+        if (answer.includes("nervous") || answer.includes("shy") || answer.includes("speechless")) {
+          status.innerHTML = "😍 YES! Guddu becomes helpless around you.";
+          heartBurst(25);
+          nextBtn.classList.remove("hidden");
+          nextBtn.innerText = "Continue 🔥";
+          stage++;
+        } else {
+          status.innerHTML = "😏 Wrong... but cute try. Think romantic...";
+        }
+      });
+    }
+
+    // ========== STAGE 3: RUNAWAY BUTTON ==========
+    function stage3() {
+      title.innerText = "Stage 3: Catch the Kiss 💋";
+      story.innerHTML = `
+        Sree... one kiss is running away from you 😈<br><br>
+        Catch it. If you can.
+      `;
+
+      stageArea.innerHTML = "";
+      status.innerHTML = "Try clicking the button...";
+
+      runawayBtn.classList.remove("hidden");
+      runawayBtn.innerText = "Kiss me 😘";
+
+      function randomPosition() {
+        const padding = 120;
+        const x = Math.random() * (window.innerWidth - padding);
+        const y = Math.random() * (window.innerHeight - padding);
+        runawayBtn.style.left = x + "px";
+        runawayBtn.style.top = y + "px";
+        runawayBtn.style.transform = "translateX(0)";
+      }
+
+      randomPosition();
+
+      runawayBtn.addEventListener("mouseenter", () => {
+        randomPosition();
+        status.innerHTML = "😂 Nope! Too slow, Sree...";
+      });
+
+      runawayBtn.addEventListener("click", () => {
+        runawayBtn.classList.add("glow");
+        runawayBtn.style.left = "50%";
+        runawayBtn.style.top = "75%";
+        runawayBtn.style.transform = "translateX(-50%)";
+        runawayBtn.innerText = "Okay okay 😳";
+
+        status.innerHTML = "😳 Fine. You win this round.";
+        heartBurst(30);
+
+        setTimeout(() => {
+          runawayBtn.classList.add("hidden");
+          nextBtn.classList.remove("hidden");
+          nextBtn.innerText = "Final Stage 😈";
+          stage++;
+        }, 1500);
+      });
+    }
+
+    // ========== STAGE 4: LOVE SPELL (VOICE) ==========
+    function stage4() {
+      title.innerText = "Final Stage: Love Spell ✨";
+      story.innerHTML = `
+        Okay Sree... last puzzle 😏<br><br>
+        To unlock your Valentine reward, complete the spell.<br><br>
+        <b>Spell:</b><br>
+        "I ______ you Guddu"
+        <br><br>
+        The spell only works if spoken out loud...
+      `;
+
+      stageArea.innerHTML = `
+        <button class="btn glow" id="spellBtn">Cast Spell ✨</button>
+      `;
+
+      status.innerHTML = "Click 'Cast Spell'...";
+
+      const spellBtn = document.getElementById("spellBtn");
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        status.innerHTML = "⚠️ This magic only works in Chrome/Edge 😅";
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.lang = "en-US";
+
+      spellBtn.addEventListener("click", () => {
+        status.innerHTML = "🎤 Listening... speak the spell 😘";
+        spellBtn.innerText = "Listening... 💞";
+        recognition.start();
+      });
 
       recognition.onresult = (event) => {
         const last = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
         console.log("Heard:", last);
 
         if (last.includes("i love you guddu")) {
-          unlocked = true;
-          status.innerHTML = "💖 Awww... Sree, I love you too.";
-          btn.innerText = "Click me, baby 💋";
-          btn.classList.add("glow");
-
-          btn.style.left = "50%";
-          btn.style.top = "70%";
-          btn.style.transform = "translateX(-50%)";
-
-          startHeartExplosion();
           recognition.stop();
-          micBtn.style.display = "none";
+          heartBurst(60);
+
+          status.innerHTML = "💖 Spell accepted...";
+
+          finalMessage.style.display = "block";
+          finalMessage.innerHTML = `
+            💋 <b>Good girl, Sree.</b><br><br>
+            You said it... and now there’s no going back 😈❤️<br><br>
+
+            You’ve unlocked your Valentine reward.<br>
+            Guddu is officially yours tonight...<br>
+            but don’t worry — I plan to take my reward too 😏🔥<br><br>
+
+            I want your hugs, your kisses, your warmth...<br>
+            and I want you <b>close</b>... very close. 💘<br><br>
+
+            <b>Love, Guddu 💞</b>
+          `;
+
+          spellBtn.style.display = "none";
         } else {
-          status.innerHTML = `🎧 I heard: "<b>${last}</b>"<br>Now say: <b>I love you Guddu</b> 😘`;
+          status.innerHTML = `🎧 I heard: "<b>${last}</b>"<br>Try again, Sree... the spell must be perfect 😏`;
         }
       };
 
       recognition.onerror = () => {
-        status.innerHTML = "⚠️ Mic error. Refresh and allow microphone access, baby 😅";
+        status.innerHTML = "⚠️ Mic error. Refresh and allow microphone access 😅";
       };
-
-      micBtn.addEventListener("click", () => {
-        status.innerHTML = "🎤 Listening... say <b>I love you Guddu</b> 😘";
-        recognition.start();
-        micBtn.innerText = "Listening... 💞";
-      });
-
-    } else {
-      status.innerHTML = "⚠️ Voice recognition not supported. Use Chrome or Edge.";
-      micBtn.style.display = "none";
     }
 
-    window.addEventListener("resize", () => {
-      if (!unlocked) randomPosition();
+    // ========== MAIN NEXT BUTTON ==========
+    nextBtn.addEventListener("click", () => {
+      nextBtn.classList.add("hidden");
+      stageArea.innerHTML = "";
+      status.innerHTML = "";
+
+      if (stage === 0) stage1();
+      else if (stage === 1) stage2();
+      else if (stage === 2) stage3();
+      else if (stage === 3) stage4();
     });
   </script>
 
